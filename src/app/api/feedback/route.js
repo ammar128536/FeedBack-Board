@@ -1,4 +1,4 @@
-// src/app/api/feedback/route.ts
+
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
@@ -8,7 +8,6 @@ export async function GET() {
   })
   return NextResponse.json(feedbacks)
 }
-
 export async function POST(req) {
   try {
     const body = await req.json()
@@ -17,8 +16,8 @@ export async function POST(req) {
     if (!name || !message) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     }
-
-    const newFeedback = await prisma.feedback.create({
+    console.log({ name, message })
+    const newFeedback = await prisma.Feedback.create({
       data: { name, message },
     })
 
@@ -29,5 +28,38 @@ export async function POST(req) {
       { error: 'Failed to submit feedback' },
       { status: 500 }
     )
+  }
+}
+
+export async function DELETE(req) {
+  const { searchParams } = new URL(req.url)
+  const id = searchParams.get('id')
+  if (!id) {
+    return NextResponse.json({ error: 'Missing id' }, { status: 400 })
+  }
+  try {
+    const deleted = await prisma.feedback.delete({
+      where: { id },
+    })
+    return NextResponse.json(deleted)
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to delete feedback' }, { status: 500 })
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    const body = await req.json();
+    const { id, name, message } = body;
+    if (!id || !name || !message) {
+      return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+    }
+    const updated = await prisma.feedback.update({
+      where: { id },
+      data: { name, message },
+    });
+    return NextResponse.json(updated);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to update feedback' }, { status: 500 });
   }
 }
