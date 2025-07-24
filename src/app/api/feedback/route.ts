@@ -1,5 +1,5 @@
-
 import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 import prisma from '@/lib/prisma'
 
 export async function GET() {
@@ -8,7 +8,8 @@ export async function GET() {
   })
   return NextResponse.json(feedbacks)
 }
-export async function POST(req) {
+
+export async function POST(req: Request) {
   try {
     const body = await req.json()
     const { name, message } = body
@@ -16,8 +17,8 @@ export async function POST(req) {
     if (!name || !message) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     }
-    console.log({ name, message })
-    const newFeedback = await prisma.Feedback.create({
+
+    const newFeedback = await prisma.feedback.create({
       data: { name, message },
     })
 
@@ -31,7 +32,7 @@ export async function POST(req) {
   }
 }
 
-export async function DELETE(req) {
+export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url)
   const id = searchParams.get('id')
   if (!id) {
@@ -47,7 +48,7 @@ export async function DELETE(req) {
   }
 }
 
-export async function PATCH(req) {
+export async function PATCH(req: Request) {
   try {
     const body = await req.json();
     const { id, name, message } = body;
