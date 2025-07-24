@@ -108,8 +108,8 @@ export default function Home() {
             <select
               className="border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-700"
               value={sortOption}
-              onChange={e => setSortOption(e.target.value as any)}
-            >
+              onChange={e => setSortOption(e.target.value as 'newest' | 'oldest' | 'user-az' | 'user-za')}
+              >
               <option value="newest">Newest</option>
               <option value="oldest">Oldest</option>
               <option value="user-az">User A-Z</option>
